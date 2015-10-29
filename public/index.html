@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>TechHub Payments</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <style media="screen">
+    body {
+      padding-top: 20px;
+    }
+
+    .small-section {
+      padding: 20px 0;
+    }
+
+    .container-small {
+      max-width: 700px;
+    }
+
+    .logo {
+      max-width: 120px;
+    }
+
+    .stripe {
+      max-height: 26px;
+    }
+
+    [ng\:cloak],
+    [ng-cloak],
+    [data-ng-cloak],
+    [x-ng-cloak],
+    .ng-cloak,
+    .x-ng-cloak {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body ng-app="thPayments" class="ng-cloak">
+
+  <div class="container container-small" ng-controller="paymentsCtrl">
+    <div id="payment-view">
+      <div class="text-center">
+        <img src="https://d1e6a3jvdxo3ln.cloudfront.net/images/website/techhub_3d_logo_png.png" alt="logo" class="logo">
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>Select items</h3>
+          <form>
+            <div class="checkbox" ng-repeat="item in items">
+              <label>
+                <input type="checkbox" id="{{item.id}}" value="{{item.value}}" ng-click="toggleItem($index)"> {{item.description}} ({{item.value / 100 | currency : '£' : 0}})
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="customDescription">Custom description</label>
+              <input type="text" class="form-control" name="customDescription" id="customDescription" ng-model="customDescription" ng-change="updateCustom()">
+            </div>
+            <div class="form-group">
+              <label for="customValue">Custom amount</label>
+              <input type="number" class="form-control" name="customValue" ng-model="customValue" id="customValue" ng-change="updateCustom()">
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-6">
+          <h3>Total</h3>
+          <table class="table table-bordered">
+            <thead>
+              <th>Item</th>
+              <th>£</th>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in selectedItems" ng-show="item.value > 0">
+                <td>{{item.description}}</td>
+                <td>{{item.value / 100 | currency : '£' : 2}}</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Total</strong>
+                </td>
+                <td>
+                  <strong>{{total / 100 | currency : '£' : 2}}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="small-section">
+            <button ng-class="{'btn-default':buttonLoading, 'btn-primary':!buttonLoading}" class="btn" id="customButton" ng-click="pay()">
+              <span ng-hide="buttonLoading">Pay now</span>
+              <span ng-show="buttonLoading"><i class="fa fa-lg fa-spin fa-refresh"></i></span>
+            </button>
+          </div>
+          <div class="small-section">
+            <p class="text-danger">{{error}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-center small-section">
+        <img src="stripe.png" alt="stripe" class="stripe">
+      </div>
+    </div>
+    <div id="thanks-view" class="hidden text-center">
+      <h1>Everything okay, thanks!</h1>
+      <div class="small-section">
+        <a ng-click="reset()" class="btn btn-primary btn-lg">Take another payment</a>
+      </div>
+      <img src="https://cdn.techhub.com/images/techhub_gingerbread_man.jpg" alt="" class="img-responsive">
+    </div>
+  </div>
+
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+  <script>
+    (function($, angular) {
+      'use strict';
+      angular.module('thPayments', [])
+        .controller('paymentsCtrl', ['$scope', '$http', function($scope, $http) {
+
+          $scope.total = 0;
+          $scope.customValue = 0;
+          $scope.selectedItems = [];
+          $scope.buttonLoading = false;
+
+          $scope.items = [{
+            id: 'flexMembership',
+            value: 45000,
+            description: 'Flex Membership'
+          }, {
+            id: 'postRegistration',
+            value: 44400,
+            description: 'Post registration service'
+          }, {
+            id: 'dailyPass',
+            value: 3000,
+            description: 'Daily Pass'
+          }, {
+            id: 'dailyPassGuest',
+            value: 1800,
+            description: 'Daily Pass for Member\'s guest'
+          }, {
+            id: 'residentMonthly',
+            value: 33000,
+            description: 'Resident Monthly'
+          }, {
+            id: 'residentMonthlyDeposit',
+            value: 66000,
+            description: 'Resident Monthly + Deposit'
+          }];
+
+
+          $scope.selectedItems.push({
+            id: 'custom',
+            description: '',
+            value: 0
+          });
+
+          $scope.reset = function() {
+            angular.element($('#payment-view')).removeClass('hidden');
+            angular.element($('#thanks-view')).addClass('hidden');
+          }
+
+          var updateTotal = function() {
+            $scope.total = 0;
+            $scope.selectedItems.forEach(function(e) {
+              $scope.total += e.value;
+            });
+          }
+
+          $scope.updateCustom = function() {
+            // custom is always the first element
+            $scope.selectedItems[0].description = $scope.customDescription;
+            $scope.selectedItems[0].value = $scope.customValue * 100;
+            updateTotal();
+          };
+
+          $scope.toggleItem = function(index) {
+            var idToCheck = $scope.items[index].id;
+            var present = false;
+            $scope.selectedItems.forEach(function(e, i) {
+              if (e.id === idToCheck) {
+                // it's already present, remove it
+                $scope.selectedItems.splice(i, 1);
+                present = true;
+                $scope.total -= e.value;
+              }
+            });
+            if (!present) {
+              $scope.selectedItems.push($scope.items[index]);
+              $scope.total += $scope.items[index].value;
+            }
+          };
+
+          var handler = StripeCheckout.configure({
+            key: 'pk_live_uc40nu4QYGSUXFFHAPRnthVl',
+            image: 'https://s3.amazonaws.com/stripe-uploads/acct_15Vj9dAHdLhZwm0Imerchant-icon-1432491852411-logo_white_square.png',
+            locale: 'auto',
+            token: function(token) {
+              $scope.buttonLoading = true;
+              var data = {
+                token: token.id,
+                amount: $scope.total,
+                email: token.email,
+                description: generateDescription()
+              };
+
+              $http({
+                  method: 'POST',
+                  url: 'https://payments.techhub.com/charge',
+                  headers: {
+                    'Content-type': 'application/json'
+                  },
+                  data: JSON.stringify(data)
+                })
+                .then(function successCallback(response) {
+                  if (response.data.status === 'succeeded') {
+                    angular.element($('#payment-view')).addClass('hidden');
+                    angular.element($('#thanks-view')).removeClass('hidden');
+                  } else {
+                    console.log(response);
+                  }
+                })
+                .catch(function errorCallback(response) {
+                  $scope.error = response.data;
+                })
+                .finally(function(){
+                  $scope.buttonLoading = false;
+                });
+            }
+          });
+
+          var generateDescription = function() {
+            var description = '';
+            $scope.selectedItems.forEach(function(e, i) {
+              if (i === 0) {
+                description = e.description;
+              } else {
+                description = description + ' + ' + e.description;
+              }
+            });
+            return description;
+          }
+
+          $scope.pay = function() {
+            handler.open({
+              name: 'TechHub',
+              description: generateDescription(),
+              zipCode: true,
+              currency: 'gbp',
+              amount: $scope.total
+            });
+          }
+        }]);
+
+    })(jQuery, angular);
+  </script>
+</body>
+
+</html>
