@@ -9,7 +9,9 @@ const stripe = require("stripe")(stripeKey);
 
 app.use(bodyParser.json());
 
-app.use(express.static('public'));
+console.log(__dirname);
+
+app.use(express.static(__dirname + '/public'));
 
 app.post('/charge', (req, res) => {
   console.log(req.body);
