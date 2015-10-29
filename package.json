@@ -17,12 +17,14 @@
   },
   "homepage": "https://github.com/techhubdotcom/payments#readme",
   "dependencies": {
+    "babel": "^5.8.29",
     "body-parser": "^1.14.1",
     "cors": "^2.7.1",
     "express": "^4.13.3",
     "stripe": "^4.0.0"
   },
   "devDependencies": {
+    "babel": "^5.8.29",
     "faucet": "0.0.1",
     "tape": "^4.2.2"
   }
