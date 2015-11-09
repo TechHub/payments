@@ -22,14 +22,17 @@ app.post('/charge', (req, res) => {
     description: req.body.description,
     receipt_email: req.body.email
   };
-  stripe.charges.create(chargeParams, (err, charge) => {
-    // asynchronously called
-    console.log(err, charge);
-    if (err) {
+  stripe.charges.create(chargeParams)
+    .then(charge => {
+      res.send(charge);
+    })
+    .catch(err => {
       res.status(500).send(err);
-    }
-    res.send(charge);
-  });
+    });
 });
 
-module.exports = app;
+const server = app.listen(process.env.PORT || 3000, function() {
+  const host = server.address().address;
+  const port = server.address().port;
+  console.log('Example app listening at http://%s:%s', host, port);
+});
