@@ -7,10 +7,6 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <style media="screen">
-    body {
-      padding-top: 20px;
-    }
-
     .small-section {
       padding: 20px 0;
     }
@@ -21,6 +17,7 @@
 
     .logo {
       max-width: 120px;
+      margin: 10px;
     }
 
     .stripe {
@@ -47,6 +44,20 @@
       </div>
       <div class="row">
         <div class="col-sm-6">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" class="form-control" name="fullName" id="fullName" ng-model="fullName">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" class="form-control" name="company" id="company" ng-model="company">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
           <h3>Select items</h3>
           <form>
             <div class="checkbox" ng-repeat="item in items">
@@ -54,12 +65,17 @@
                 <input type="checkbox" id="{{item.id}}" value="{{item.value}}" ng-click="toggleItem($index)"> {{item.description}} ({{item.value / 100 | currency : '£' : 0}})
               </label>
             </div>
-            <div class="form-group">
-              <label for="customDescription">Custom description</label>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="customItem" ng-click="toggleCustom()" ng-model="customItem"> Custom item
+              </label>
+            </div>
+            <div class="form-group" ng-show="customItem">
+              <label for="customDescription">Description</label>
               <input type="text" class="form-control" name="customDescription" id="customDescription" ng-model="customDescription" ng-change="updateCustom()">
             </div>
-            <div class="form-group">
-              <label for="customValue">Custom amount</label>
+            <div class="form-group" ng-show="customItem">
+              <label for="customValue">Amount</label>
               <input type="number" class="form-control" name="customValue" ng-model="customValue" id="customValue" ng-change="updateCustom()">
             </div>
           </form>
@@ -114,10 +130,16 @@
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
   <script>
+    if (window.location.hostname.indexOf('payments') > -1) {
+      var stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
+    } else {
+      var stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
+    }
     (function($, angular) {
       'use strict';
+
       angular.module('thPayments', [])
-        .controller('paymentsCtrl', ['$scope', '$http', function($scope, $http) {
+        .controller('paymentsCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 
           $scope.total = 0;
           $scope.customValue = 0;
@@ -194,7 +216,7 @@
           };
 
           var handler = StripeCheckout.configure({
-            key: 'pk_live_uc40nu4QYGSUXFFHAPRnthVl',
+            key: $window.stripeKey,
             image: 'https://s3.amazonaws.com/stripe-uploads/acct_15Vj9dAHdLhZwm0Imerchant-icon-1432491852411-logo_white_square.png',
             locale: 'auto',
             token: function(token) {
@@ -203,12 +225,14 @@
                 token: token.id,
                 amount: $scope.total,
                 email: token.email,
+                fullName: $scope.fullName,
+                company: $scope.company,
                 description: generateDescription()
               };
 
               $http({
                   method: 'POST',
-                  url: 'https://payments.techhub.com/charge',
+                  url: '/charge',
                   headers: {
                     'Content-type': 'application/json'
                   },
@@ -219,27 +243,28 @@
                     angular.element($('#payment-view')).addClass('hidden');
                     angular.element($('#thanks-view')).removeClass('hidden');
                   } else {
-                    console.log(response);
+                    $scope.error = response.data;
                   }
                 })
                 .catch(function errorCallback(response) {
                   $scope.error = response.data;
                 })
-                .finally(function(){
+                .finally(function() {
                   $scope.buttonLoading = false;
                 });
             }
           });
 
           var generateDescription = function() {
-            var description = '';
+            var description = $scope.fullName + ' of ' + $scope.company + ': ';
             $scope.selectedItems.forEach(function(e, i) {
               if (i === 0) {
-                description = e.description;
+                description = description + e.description;
               } else {
                 description = description + ' + ' + e.description;
               }
             });
+            console.log(description);
             return description;
           }
 

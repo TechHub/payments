@@ -3,7 +3,15 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 
-const stripeKey = process.env.STRIPE_KEY;
+let stripeKey;
+
+if (process.env.NODE_ENV === 'production') {
+  console.log('production');
+  stripeKey = process.env.STRIPE_KEY_PROD;
+} else {
+  console.log('development');
+  stripeKey = process.env.STRIPE_KEY_DEV;
+}
 
 const stripe = require("stripe")(stripeKey);
 
@@ -20,7 +28,11 @@ app.post('/charge', (req, res) => {
     currency: 'gbp',
     source: req.body.token, // obtained with Stripe.js
     description: req.body.description,
-    receipt_email: req.body.email
+    receipt_email: req.body.email,
+    metadata: {
+      fullName: req.body.fullName,
+      company: req.body.company
+    },
   };
   stripe.charges.create(chargeParams)
     .then(charge => {
