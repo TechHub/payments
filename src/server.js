@@ -13,6 +13,8 @@ if (process.env.NODE_ENV === 'production') {
   stripeKey = process.env.STRIPE_KEY_DEV;
 }
 
+console.log(stripeKey);
+
 const stripe = require("stripe")(stripeKey);
 
 app.use(bodyParser.json());
@@ -22,7 +24,6 @@ console.log(__dirname);
 app.use(express.static(__dirname + '/public'));
 
 app.post('/charge', (req, res) => {
-  console.log(req.body);
   const chargeParams = {
     amount: req.body.amount,
     currency: 'gbp',
