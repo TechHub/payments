@@ -131,9 +131,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
   <script>
     if (window.location.hostname.indexOf('localhost') > -1) {
-      var stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
+      window.stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
     } else {
-      var stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
+      window.stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
     }
     console.log(stripeKey);
     (function($, angular) {
