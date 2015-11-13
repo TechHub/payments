@@ -130,10 +130,10 @@
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
   <script>
-    if (window.location.hostname.indexOf('payments') > -1) {
-      var stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
-    } else {
+    if (window.location.hostname.indexOf('localhost') > -1) {
       var stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
+    } else {
+      var stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
     }
     (function($, angular) {
       'use strict';
