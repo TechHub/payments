@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>TechHub Payments</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <style media="screen">
+      .small-section {
+        padding: 20px 0;
+      }
+      .container-small {
+        max-width: 700px;
+      }
+      .logo {
+        max-width: 120px;
+        margin: 10px;
+      }
+      .stripe {
+        max-height: 26px;
+      }
+      [ng\:cloak],
+      [ng-cloak],
+      [data-ng-cloak],
+      [x-ng-cloak],
+      .ng-cloak,
+      .x-ng-cloak {
+        display: none !important;
+      }
+      .nav-tabs {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+
+  <body class="ng-cloak" ng-app="thPayments">
+    <div class="container container-small">
+      <div class="text-center">
+        <img alt="logo" class="logo" src="https://d1e6a3jvdxo3ln.cloudfront.net/images/website/techhub_3d_logo_png.png">
+      </div>
+
+      <div class="payment-view">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="active" role="presentation">
+            <a aria-controls="london" data-toggle="tab" href="#london" role="tab">London</a>
+          </li>
+          <li role="presentation">
+            <a aria-controls="warsaw" data-toggle="tab" href="#warsaw" role="tab">Warsaw</a>
+          </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <!-- LONDON -->
+          <div class="tab-pane active" id="london" ng-controller="paymentsLondonCtrl" role="tabpanel">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="fullName">Full Name</label>
+                  <input class="form-control" id="fullName" name="fullName" ng-model="fullName" type="text">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="company">Company</label>
+                  <input class="form-control" id="company" name="company" ng-model="company" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <h3>Select items</h3>
+                <form>
+                  <div class="checkbox" ng-repeat="item in items">
+                    <label>
+                      <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}">
+                      {{item.description}}
+                      ({{item.value / 100 | currency : '£' : 0}})
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label>
+                      <input id="customItem" ng-click="toggleCustom()" ng-model="customItem" type="checkbox">
+                      Custom item
+                    </label>
+                  </div>
+                  <div class="form-group" ng-show="customItem">
+                    <label for="customDescription">Description</label>
+                    <input class="form-control" id="customDescription" name="customDescription" ng-change="updateCustom()" ng-model="customDescription" type="text">
+                  </div>
+                  <div class="form-group" ng-show="customItem">
+                    <label for="customValue">Amount</label>
+                    <input class="form-control" id="customValue" name="customValue" ng-change="updateCustom()" ng-model="customValue" type="number">
+                  </div>
+                </form>
+              </div>
+              <div class="col-sm-6">
+                <h3>Total</h3>
+                <table class="table table-bordered">
+                  <thead>
+                    <th>Item</th>
+                    <th>£</th>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in selectedItems" ng-show="item.value > 0">
+                      <td>{{item.description}}</td>
+                      <td>{{item.value / 100 | currency : '£' : 2}}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Total</strong>
+                      </td>
+                      <td>
+                        <strong>{{total / 100 | currency : '£' : 2}}</strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="small-section">
+                  <button class="btn" id="customButton" ng-class="{'btn-default':buttonLoading, 'btn-primary':!buttonLoading}" ng-click="pay()">
+                    <span ng-hide="buttonLoading">Pay now</span>
+                    <span ng-show="buttonLoading">
+                      <i class="fa fa-lg fa-spin fa-refresh"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="small-section">
+                  <p class="text-danger">{{error}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="text-center small-section">
+              <img alt="stripe" class="stripe" src="stripe.png">
+            </div>
+          </div>
+          <!-- WARSAW -->
+          <div class="tab-pane" id="warsaw" ng-controller="paymentsWarsawCtrl" role="tabpanel">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="fullName">Full Name</label>
+                  <input class="form-control" name="fullName" ng-model="fullName" type="text">
+                </div>
+                <div class="form-group">
+                  <label for="company">Company</label>
+                  <input class="form-control" name="company" ng-model="company" type="text">
+                </div>
+                  <!-- <div class="checkbox" ng-repeat="item in items">
+                  <label>
+                    <input type="checkbox" id="{{item.id}}" value="{{item.value}}" ng-click="toggleItem($index)"> {{item.description}} ({{item.value / 100 | currency : 'PLN' : 0}})
+                  </label>
+                </div> -->
+                  <div class="form-group">
+                    <label for="customDescription">Description</label>
+                    <input class="form-control" name="customDescription" ng-change="updateCustom()" ng-model="customDescription" type="text">
+                  </div>
+                  <div class="form-group">
+                    <label for="customValue">Amount</label>
+                    <input class="form-control" name="customValue" ng-change="updateCustom()" ng-model="customValue" type="number">
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                <table class="table table-bordered">
+                  <thead>
+                    <th>Item</th>
+                    <th>PLN</th>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="item in selectedItems" ng-show="item.value > 0">
+                      <td>{{item.description}}</td>
+                      <td>{{item.value / 100 | currency : 'PLN' : 0}}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Total</strong>
+                      </td>
+                      <td>
+                        <strong>{{total / 100 | currency : 'PLN' : 0}}</strong>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <form action="/charge_braintree" method="POST">
+                  <div id="form-warsaw"></div>
+                  <input type="hidden" name="amount" ng-value="total">
+                  <button class="btn btn-primary">Pay with your credit card</button>
+                </form>
+              </div>
+            </div>
+            <div class="small-section">
+              <p class="text-danger">{{error}}</p>
+            </div>
+            <div class="text-center small-section">
+              <a href="https://www.braintreegateway.com/merchants/rchrgpny9c7zwnsn/verified" target="_blank">
+                <img border="0" height="44px" src="https://s3.amazonaws.com/braintree-badges/braintree-badge-wide-dark.png" width="280px"/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="thanks-view hidden text-center" ng-controller="thanksCtrl">
+        <h1>Everything okay, thanks!</h1>
+        <div class="small-section">
+          <a class="btn btn-primary btn-lg" ng-click="reset()">Take another payment</a>
+        </div>
+        <img alt="" class="img-responsive" src="https://cdn.techhub.com/images/techhub_gingerbread_man.jpg">
+      </div>
+
+    </div>
+
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script type="text/javascript"></script>
+    <script>
+      if (window.location.hostname.indexOf('localhost') > -1) {
+        window.stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
+      } else {
+        window.stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
+      }
+      (function($, angular) {
+        'use strict';
+
+        angular.module('thPayments', []).run([
+          '$window',
+          function($window) {
+            $window.braintree.setup('<%= braintreeToken %>', 'dropin', {container: 'form-warsaw'});
+          }
+        ]).controller('thanksCtrl', [
+          '$scope',
+          '$window',
+          function($scope, $window) {
+            $scope.reset = function() {
+              $window.location.reload();
+            }
+          }
+        ]).controller('paymentsLondonCtrl', [
+          '$scope',
+          '$http',
+          '$window',
+          function($scope, $http, $window) {
+
+            $scope.total = 0;
+            $scope.customValue = 0;
+            $scope.selectedItems = [];
+            $scope.buttonLoading = false;
+
+            $scope.items = [
+              {
+                id: 'flexMembership',
+                value: 45000,
+                description: 'Flex Membership'
+              }, {
+                id: 'postRegistration',
+                value: 44400,
+                description: 'Post registration service'
+              }, {
+                id: 'dailyPass',
+                value: 3000,
+                description: 'Daily Pass'
+              }, {
+                id: 'dailyPassGuest',
+                value: 1800,
+                description: 'Daily Pass for Member\'s guest'
+              }, {
+                id: 'residentMonthly',
+                value: 33000,
+                description: 'Resident Monthly'
+              }, {
+                id: 'residentMonthlyDeposit',
+                value: 66000,
+                description: 'Resident Monthly + Deposit'
+              }
+            ];
+
+            $scope.selectedItems.push({id: 'custom', description: '', value: 0});
+
+            var updateTotal = function() {
+              $scope.total = 0;
+              $scope.selectedItems.forEach(function(e) {
+                $scope.total += e.value;
+              });
+            }
+
+            $scope.updateCustom = function() {
+              // custom is always the first element
+              $scope.selectedItems[0].description = $scope.customDescription;
+              $scope.selectedItems[0].value = $scope.customValue * 100;
+              updateTotal();
+            };
+
+            $scope.toggleItem = function(index) {
+              var idToCheck = $scope.items[index].id;
+              var present = false;
+              $scope.selectedItems.forEach(function(e, i) {
+                if (e.id === idToCheck) {
+                  // it's already present, remove it
+                  $scope.selectedItems.splice(i, 1);
+                  present = true;
+                  $scope.total -= e.value;
+                }
+              });
+              if (!present) {
+                $scope.selectedItems.push($scope.items[index]);
+                $scope.total += $scope.items[index].value;
+              }
+            };
+
+            var handler = StripeCheckout.configure({
+              key: $window.stripeKey,
+              image: 'https://s3.amazonaws.com/stripe-uploads/acct_15Vj9dAHdLhZwm0Imerchant-icon-1432491852411-logo_white_square.png',
+              locale: 'auto',
+              token: function(token) {
+                $scope.buttonLoading = true;
+                var data = {
+                  token: token.id,
+                  amount: $scope.total,
+                  email: token.email,
+                  fullName: $scope.fullName,
+                  company: $scope.company,
+                  description: generateDescription()
+                };
+
+                $http({
+                  method: 'POST',
+                  url: '/charge_stripe',
+                  headers: {
+                    'Content-type': 'application/json'
+                  },
+                  data: JSON.stringify(data)
+                }).then(function successCallback(response) {
+                  if (response.data.status === 'succeeded') {angular.element($('#payment-view')).addClass('hidden');
+                    angular.element($('#thanks-view')).removeClass('hidden');} else {
+                    $scope.error = response.data;
+                  }
+                }).catch(function errorCallback(response) {
+                  $scope.error = response.data;
+                }). finally (function() {
+                  $scope.buttonLoading = false;
+                });
+              }
+            });
+
+            var generateDescription = function() {
+              var description = $scope.fullName + ' of ' + $scope.company + ': ';
+              $scope.selectedItems.forEach(function(e, i) {
+                if (i === 0) {
+                  description = description + e.description;
+                } else {
+                  description = description + ' + ' + e.description;
+                }
+              });
+              console.log(description);
+              return description;
+            }
+
+            $scope.pay = function() {
+              handler.open({name: 'TechHub', description: generateDescription(), currency: 'gbp', amount: $scope.total});
+            }
+          }
+        ]).controller('paymentsWarsawCtrl', [
+          '$scope',
+          '$http',
+          '$window',
+          function($scope, $http, $window) {
+
+            $scope.total = 0;
+            $scope.customValue = 0;
+            $scope.selectedItems = [];
+            $scope.buttonLoading = false;
+
+            $scope.items = [];
+
+            $scope.selectedItems.push({id: 'custom', description: '', value: 0});
+
+            var updateTotal = function() {
+              $scope.total = 0;
+              $scope.selectedItems.forEach(function(e) {
+                $scope.total += e.value;
+              });
+            }
+
+            $scope.updateCustom = function() {
+              // custom is always the first element
+              $scope.selectedItems[0].description = $scope.customDescription;
+              $scope.selectedItems[0].value = $scope.customValue * 100;
+              updateTotal();
+            };
+
+            var handler = StripeCheckout.configure({
+              key: $window.stripeKey,
+              image: 'https://s3.amazonaws.com/stripe-uploads/acct_15Vj9dAHdLhZwm0Imerchant-icon-1432491852411-logo_white_square.png',
+              locale: 'auto',
+              token: function(token) {
+                $scope.buttonLoading = true;
+                var data = {
+                  token: token.id,
+                  amount: $scope.total,
+                  email: token.email,
+                  fullName: $scope.fullName,
+                  company: $scope.company,
+                  description: generateDescription()
+                };
+
+                $http({
+                  method: 'POST',
+                  url: '/charge_braintree',
+                  headers: {
+                    'Content-type': 'application/json'
+                  },
+                  data: JSON.stringify(data)
+                }).then(function successCallback(response) {
+                  if (response.data.status === 'succeeded') {angular.element($('#payment-view')).addClass('hidden');
+                    angular.element($('#thanks-view')).removeClass('hidden');} else {
+                    $scope.error = response.data;
+                  }
+                }).catch(function errorCallback(response) {
+                  $scope.error = response.data;
+                }). finally (function() {
+                  $scope.buttonLoading = false;
+                });
+              }
+            });
+
+            var generateDescription = function() {
+              var description = $scope.fullName + ' of ' + $scope.company + ': ';
+              $scope.selectedItems.forEach(function(e, i) {
+                if (i === 0) {
+                  description = description + e.description;
+                } else {
+                  description = description + ' + ' + e.description;
+                }
+              });
+              console.log(description);
+              return description;
+            }
+
+            $scope.pay = function() {
+              handler.open({name: 'TechHub', description: generateDescription(), currency: 'gbp', amount: $scope.total});
+            }
+          }
+        ]);
+
+      })(jQuery, angular);
+    </script>
+  </body>
+
+</html>

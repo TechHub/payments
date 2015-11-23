@@ -17,15 +17,18 @@
   },
   "homepage": "https://github.com/techhubdotcom/payments#readme",
   "dependencies": {
-    "babel": "^5.8.29",
+    "babel-core": "^6.2.1",
+    "babel-preset-es2015": "^6.1.18",
     "body-parser": "^1.14.1",
-    "cors": "^2.7.1",
+    "braintree": "^1.31.0",
     "dotenv": "^1.2.0",
+    "ejs": "^2.3.4",
     "express": "^4.13.3",
     "stripe": "^4.0.0"
   },
   "devDependencies": {
-    "babel": "^5.8.29",
+    "babel-eslint": "^4.1.5",
+    "eslint": "^1.10.1",
     "faucet": "0.0.1",
     "tape": "^4.2.2"
   }
