@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const braintree = require('braintree');
+const cors = require('cors');
 const app = express();
 
 // CONFIG
@@ -12,6 +13,7 @@ const braintreeGateway = braintree.connect({
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false,
@@ -20,19 +22,30 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', (req, res) => {
+app.get('/london', (req, res) => {
+  res.render('london.ejs', {});
+});
+
+app.get('/warsaw', (req, res) => {
   braintreeGateway.clientToken.generate({}, (err, response) => {
-    res.render('index.ejs', {
+    res.render('warsaw.ejs', {
       braintreeToken: response.clientToken,
     });
   });
 });
 
+app.get('/braintree_token', (req, res) => {
+  braintreeGateway.clientToken.generate({}, (err, response) => {
+    res.send(response);
+  });
+});
+
 app.post('/charge_braintree', (req, res) => {
+  console.log(req.body);
   // send also payment amount and data
   braintreeGateway.transaction.sale({
     amount: parseInt(req.body.amount, 10),
-    paymentMethodNonce: req.body.payment_method_nonce,
+    paymentMethodNonce: req.body.nonce,
   }, (err, result) => {
     console.log(err, result);
     res.send(result);
