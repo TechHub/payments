@@ -75,13 +75,13 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
     var generateDescription = function() {
       var description;
       $scope.selectedItems.forEach(function(e, i) {
-        console.log(i);
-        if (i === 1) {
+        if (i === 0) {
           description = e.description;
         } else {
           description = description + ' + ' + e.description;
         }
       });
+      console.log(description);
       return description;
     }
 
