@@ -120,31 +120,32 @@
           <img alt="stripe" class="stripe" src="stripe.png">
         </div>
       </div>
-
-      <div class="thanks-view hidden text-center" ng-controller="thanksCtrl">
-        <h1>Everything okay, thanks!</h1>
-        <div class="small-section">
-          <a class="btn btn-primary btn-lg" ng-click="reset()">Take another payment</a>
-        </div>
-        <img alt="thanks" class="img-responsive" src="https://cdn.techhub.com/images/techhub_gingerbread_man.jpg">
-      </div>
-
     </div>
 
-    <script src="https://checkout.stripe.com/checkout.js"></script>
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
-    <script type="text/javascript"></script>
-    <script>
-      if (window.location.hostname.indexOf('localhost') > -1) {
-        window.stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
-      } else {
-        window.stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
-      }
-    </script>
-    <script src="main.js"></script>
-    <script src="london.js"></script>
+    <div class="thanks-view hidden text-center" ng-controller="thanksCtrl">
+      <h1>Everything okay, thanks!</h1>
+      <div class="small-section">
+        <a class="btn btn-primary btn-lg" ng-click="reset()">Take another payment</a>
+      </div>
+      <img alt="thanks" class="img-responsive" src="https://cdn.techhub.com/images/techhub_gingerbread_man.jpg">
+    </div>
+
+  </div>
+
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+  <script type="text/javascript"></script>
+  <script>
+    if (window.location.hostname.indexOf('localhost') > -1) {
+      window.stripeKey = 'pk_test_9wkm1wXbrApEBDliBmirnkAG';
+    } else {
+      window.stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
+    }
+  </script>
+  <script src="main.js"></script>
+  <script src="london.js"></script>
 </body>
 
 </html>

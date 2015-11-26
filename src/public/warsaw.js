@@ -4,57 +4,20 @@ angular.module('thPayments')
     '$http',
     '$window',
     function($scope, $http, $window) {
-
+      $scope.buttonLoading = true;
       $scope.items = [{
         id: 'flexMembershipWarsaw',
-        value: 246000,
+        value: 2460,
         description: 'Flex Membership'
       }, {
         id: 'residentMembershipWarsaw',
-        value: 92250,
+        value: 922.5,
         description: 'Resident Membership'
       }];
-
-      $window.braintree.setup($window.braintreeToken, 'dropin', {
-        container: 'form-warsaw',
-        onPaymentMethodReceived: function(o) {
-
-          var data = {
-            nonce: o.nonce,
-            amount: $scope.total,
-            email: $scope.email,
-            fullName: $scope.fullName,
-            company: $scope.company,
-            description: generateDescription()
-          };
-
-          $http({
-            method: 'POST',
-            url: '/charge_braintree',
-            headers: {
-              'Content-type': 'application/json'
-            },
-            data: JSON.stringify(data)
-          }).then(function successCallback(response) {
-            console.log(response.data);
-            if (response.data.transaction.status === 'authorized') {
-              angular.element($('.payment-view')).addClass('hidden');
-              angular.element($('.thanks-view')).removeClass('hidden');
-            } else {
-              $scope.error = response.data.transaction.status;
-            }
-          }).catch(function errorCallback(response) {
-            $scope.error = response.data;
-          }).finally(function() {
-            $scope.buttonLoading = false;
-          });
-        }
-      });
 
       $scope.total = 0;
       $scope.customValue = 0;
       $scope.selectedItems = [];
-      $scope.buttonLoading = false;
 
       $scope.selectedItems.push({
         id: 'custom',
@@ -67,7 +30,7 @@ angular.module('thPayments')
         $scope.selectedItems.forEach(function(e) {
           $scope.total += e.value;
         });
-      }
+      };
 
       $scope.updateCustom = function() {
         // custom is always the first element
@@ -96,7 +59,6 @@ angular.module('thPayments')
       var generateDescription = function() {
         var description;
         $scope.selectedItems.forEach(function(e, i) {
-          console.log(i);
           if (i === 1) {
             description = e.description;
           } else {
@@ -104,10 +66,51 @@ angular.module('thPayments')
           }
         });
         return description;
-      }
+      };
 
       $scope.pay = function() {
         $scope.buttonLoading = true;
-      }
+      };
+
+      $window.braintree.setup($window.braintreeToken, 'dropin', {
+        container: 'ui-warsaw',
+        onPaymentMethodReceived: function(o) {
+          $scope.buttonLoading = true;
+          var data = {
+            nonce: o.nonce,
+            // amount: $scope.total,
+            amount: 50,
+            email: $scope.email,
+            fullName: $scope.fullName,
+            company: $scope.company,
+            description: generateDescription()
+          };
+          $http({
+            method: 'POST',
+            url: '/charge_braintree',
+            headers: {
+              'Content-type': 'application/json'
+            },
+            data: JSON.stringify(data)
+          }).then(function successCallback(response) {
+            console.log(response.data);
+            if(response.data.success){
+              angular.element($('.payment-view')).addClass('hidden');
+              angular.element($('.thanks-view')).removeClass('hidden');
+            }
+            else {
+              $scope.error = response.data.message;
+            }
+          }).catch(function errorCallback(response) {
+            $scope.error = response.data;
+          }).finally(function() {
+            $scope.buttonLoading = false;
+          });
+        },
+        onReady: function(){
+          $scope.buttonLoading = false;
+          $scope.$apply();
+        }
+      });
     }
   ]);

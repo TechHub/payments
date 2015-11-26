@@ -66,7 +66,7 @@
               </div>
               <div class="checkbox" ng-repeat="item in items">
                 <label>
-                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} ({{item.value / 100 | currency : 'PLN' : 0}})
+                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} ({{item.value | currency : 'PLN' : 0}})
                 </label>
               </div>
               <div class="checkbox">
@@ -94,22 +94,22 @@
               <tbody>
                 <tr ng-repeat="item in selectedItems" ng-show="item.value > 0">
                   <td>{{item.description}}</td>
-                  <td>{{item.value / 100 | currency : 'PLN' : 0}}</td>
+                  <td>{{item.value | currency : 'PLN' : 0}}</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Total</strong>
                   </td>
                   <td>
-                    <strong>{{total / 100 | currency : 'PLN' : 0}}</strong>
+                    <strong>{{total | currency : 'PLN' : 0}}</strong>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <form>
-              <div id="form-warsaw"></div>
+            <form id="form-warsaw" ng-submit="pay()">
+              <div id="ui-warsaw"></div>
               <input name="amount" ng-value="total" type="hidden">
-              <button class="btn btn-primary" ng-click="pay()">
+              <button class="btn btn-primary" ng-disabled="buttonLoading">
                 <span ng-hide="buttonLoading">Pay now</span>
                 <span ng-show="buttonLoading">
                   <i class="fa fa-lg fa-spin fa-refresh"></i>
@@ -128,6 +128,7 @@
         </div>
       </div>
     </div>
+
     <div class="thanks-view hidden text-center" ng-controller="thanksCtrl">
       <h1>Everything okay, thanks!</h1>
       <div class="small-section">
@@ -135,6 +136,7 @@
       </div>
       <img alt="thanks" class="img-responsive" src="https://cdn.techhub.com/images/techhub_gingerbread_man.jpg">
     </div>
+
   </div>
 
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>

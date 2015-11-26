@@ -72,6 +72,19 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       }
     };
 
+    var generateDescription = function() {
+      var description;
+      $scope.selectedItems.forEach(function(e, i) {
+        console.log(i);
+        if (i === 1) {
+          description = e.description;
+        } else {
+          description = description + ' + ' + e.description;
+        }
+      });
+      return description;
+    }
+
     var handler = StripeCheckout.configure({
       key: $window.stripeKey,
       image: 'https://s3.amazonaws.com/stripe-uploads/acct_15Vj9dAHdLhZwm0Imerchant-icon-1432491852411-logo_white_square.png',
@@ -95,9 +108,10 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
           },
           data: JSON.stringify(data)
         }).then(function successCallback(response) {
+          console.log(response);
           if (response.data.status === 'succeeded') {
-            angular.element($('#payment-view')).addClass('hidden');
-            angular.element($('#thanks-view')).removeClass('hidden');
+            angular.element($('.payment-view')).addClass('hidden');
+            angular.element($('.thanks-view')).removeClass('hidden');
           } else {
             $scope.error = response.data;
           }
@@ -108,19 +122,6 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
         });
       }
     });
-
-    var generateDescription = function() {
-      var description;
-      $scope.selectedItems.forEach(function(e, i) {
-        console.log(i);
-        if (i === 1) {
-          description = e.description;
-        } else {
-          description = description + ' + ' + e.description;
-        }
-      });
-      return description;
-    }
 
     $scope.pay = function() {
       handler.open({
