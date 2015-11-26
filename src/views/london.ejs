@@ -104,7 +104,7 @@
               </tbody>
             </table>
             <div class="small-section">
-              <button class="btn" id="customButton" ng-class="{'btn-default':buttonLoading, 'btn-primary':!buttonLoading}" ng-click="pay()">
+              <button class="btn" id="customButton" ng-class="{'btn-default':buttonLoading, 'btn-primary':!buttonLoading}" ng-click="pay()" ng-disabled="buttonLoading">
                 <span ng-hide="buttonLoading">Pay now</span>
                 <span ng-show="buttonLoading">
                   <i class="fa fa-lg fa-spin fa-refresh"></i>
