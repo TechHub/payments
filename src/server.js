@@ -41,13 +41,18 @@ app.get('/braintree_token', (req, res) => {
 });
 
 app.post('/charge_braintree', (req, res) => {
-  console.log(req.body);
-  // send also payment amount and data
+  // console.log(req.body);
   braintreeGateway.transaction.sale({
     amount: parseInt(req.body.amount, 10),
     paymentMethodNonce: req.body.nonce,
+    customer: {
+      firstName: req.body.givenName,
+      lastName: req.body.surname,
+      company: req.body.company,
+      email: req.body.email,
+    },
   }, (err, result) => {
-    console.log(err, result);
+    console.log(err);
     res.send(result);
   });
 });

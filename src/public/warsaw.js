@@ -78,10 +78,10 @@ angular.module('thPayments')
           $scope.buttonLoading = true;
           var data = {
             nonce: o.nonce,
-            // amount: $scope.total,
-            amount: 50,
+            amount: $scope.total,
             email: $scope.email,
-            fullName: $scope.fullName,
+            givenName: $scope.givenName,
+            surname: $scope.surname,
             company: $scope.company,
             description: generateDescription()
           };
