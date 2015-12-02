@@ -3,11 +3,18 @@ const bodyParser = require('body-parser');
 const braintree = require('braintree');
 const cors = require('cors');
 const app = express();
+let braintreeEnv;
+
+if (process.env.NODE_ENV === 'production') {
+  braintreeEnv = braintree.Environment.Production;
+} else {
+  braintreeEnv = braintree.Environment.Sandbox;
+}
 
 // CONFIG
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 const braintreeGateway = braintree.connect({
-  environment: braintree.Environment.Sandbox,
+  environment: braintreeEnv,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
   publicKey: process.env.BRAINTREE_PUBLIC_KEY,
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
