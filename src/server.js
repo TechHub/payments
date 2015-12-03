@@ -58,6 +58,9 @@ app.post('/charge_braintree', (req, res) => {
       company: req.body.company,
       email: req.body.email,
     },
+    options: {
+      submitForSettlement: true,
+    },
   }, (err, result) => {
     console.log(err);
     res.send(result);
