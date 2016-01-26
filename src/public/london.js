@@ -11,7 +11,7 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
 
     $scope.items = [{
       id: 'flexMembership',
-      value: 45000,
+      value: 51000,
       description: 'Flex Membership'
     }, {
       id: 'postRegistration',
