@@ -112,7 +112,7 @@ angular.module('thPayments').controller('paymentsMadridCtrl', [
       handler.open({
         name: 'TechHub',
         description: generateDescription(),
-        currency: 'gbp',
+        currency: 'eur',
         amount: $scope.total
       });
     }

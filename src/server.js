@@ -74,10 +74,20 @@ app.post('/charge_braintree', (req, res) => {
 });
 
 app.post('/charge_stripe', (req, res) => {
+  let stripe;
+  let currency;
+
+  if (req.body.location === 'london') {
+    stripe = stripeLondon;
+    currency = 'gbp';
+  } else if (req.body.location === 'madrid') {
+    stripe = stripeMadrid;
+    currency = 'eur';
+  }
+
   const chargeParams = {
-    location: req.body.location,
     amount: req.body.amount,
-    currency: 'gbp',
+    currency: currency,
     source: req.body.token, // obtained with Stripe.js
     description: req.body.description,
     receipt_email: req.body.email,
@@ -86,12 +96,7 @@ app.post('/charge_stripe', (req, res) => {
       company: req.body.company,
     },
   };
-  let stripe;
-  if (chargeParams.loation === 'london') {
-    stripe = stripeLondon;
-  } else if (chargeParams.loation === 'madrid') {
-    stripe = stripeMadrid;
-  }
+
   stripe.charges.create(chargeParams)
     .then(charge => {
       res.send(charge);
