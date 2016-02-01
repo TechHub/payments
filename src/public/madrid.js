@@ -1,4 +1,4 @@
-angular.module('thPayments').controller('paymentsLondonCtrl', [
+angular.module('thPayments').controller('paymentsMadridCtrl', [
   '$scope',
   '$http',
   '$window',
@@ -10,29 +10,13 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
     $scope.buttonLoading = false;
 
     $scope.items = [{
-      id: 'flexMembership',
-      value: 51000,
-      description: 'Flex Membership'
+      id: 'daypassNonMemberMadrid',
+      value: 3630,
+      description: 'Day Pass for Non-Member'
     }, {
-      id: 'postRegistration',
-      value: 44400,
-      description: 'Post registration service'
-    }, {
-      id: 'dailyPass',
-      value: 3000,
-      description: 'Daily Pass'
-    }, {
-      id: 'dailyPassGuest',
-      value: 1800,
-      description: 'Daily Pass for Member\'s guest'
-    }, {
-      id: 'residentMonthly',
-      value: 33000,
-      description: 'Resident Monthly'
-    }, {
-      id: 'residentMonthlyDeposit',
-      value: 66000,
-      description: 'Resident Monthly + Deposit'
+      id: 'daypassMemberGuestMadrid',
+      value: 2178,
+      description: 'Day Pass for Non-Member'
     }];
 
     $scope.selectedItems.push({
@@ -92,7 +76,7 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       token: function(token) {
         $scope.buttonLoading = true;
         var data = {
-          location: 'london',
+          location: 'madrid',
           token: token.id,
           amount: $scope.total,
           email: token.email,

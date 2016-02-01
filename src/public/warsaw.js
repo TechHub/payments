@@ -13,6 +13,14 @@ angular.module('thPayments')
         id: 'residentMembershipWarsaw',
         value: 922.5,
         description: 'Resident Membership'
+      }, {
+        id: 'dailyNonMemberWarsaw',
+        value: 166.05,
+        description: 'Day Pass for Non-Member'
+      }, {
+        id: 'dailyMemberGuestWarsaw',
+        value: 98.40,
+        description: 'Day Pass for Member\'s Guest'
       }];
 
       $scope.total = 0;

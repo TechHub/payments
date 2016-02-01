@@ -12,7 +12,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // CONFIG
-const stripe = require('stripe')(process.env.STRIPE_KEY);
+const stripeLondon = require('stripe')(process.env.STRIPE_KEY_LONDON);
+const stripeMadrid = require('stripe')(process.env.STRIPE_KEY_MADRID);
+
 const braintreeGateway = braintree.connect({
   environment: braintreeEnv,
   merchantId: process.env.BRAINTREE_MERCHANT_ID,
@@ -31,6 +33,10 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/london', (req, res) => {
   res.render('london.ejs', {});
+});
+
+app.get('/madrid', (req, res) => {
+  res.render('madrid.ejs', {});
 });
 
 app.get('/warsaw', (req, res) => {
@@ -69,6 +75,7 @@ app.post('/charge_braintree', (req, res) => {
 
 app.post('/charge_stripe', (req, res) => {
   const chargeParams = {
+    location: req.body.location,
     amount: req.body.amount,
     currency: 'gbp',
     source: req.body.token, // obtained with Stripe.js
@@ -79,6 +86,12 @@ app.post('/charge_stripe', (req, res) => {
       company: req.body.company,
     },
   };
+  let stripe;
+  if (chargeParams.loation === 'london') {
+    stripe = stripeLondon;
+  } else if (chargeParams.loation === 'madrid') {
+    stripe = stripeMadrid;
+  }
   stripe.charges.create(chargeParams)
     .then(charge => {
       res.send(charge);
