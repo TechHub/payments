@@ -43,7 +43,7 @@ angular.module('thPayments')
       $scope.updateCustom = function() {
         // custom is always the first element
         $scope.selectedItems[0].description = $scope.customDescription;
-        $scope.selectedItems[0].value = $scope.customValue * 100;
+        $scope.selectedItems[0].value = $scope.customValue;
         updateTotal();
       };
 
