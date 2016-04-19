@@ -54,9 +54,8 @@ app.get('/braintree_token', (req, res) => {
 });
 
 app.post('/charge_braintree', (req, res) => {
-  // console.log(req.body);
   braintreeGateway.transaction.sale({
-    amount: parseInt(req.body.amount, 10),
+    amount: req.body.amount,
     paymentMethodNonce: req.body.nonce,
     customer: {
       firstName: req.body.givenName,

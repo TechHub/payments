@@ -98,14 +98,14 @@
               <tbody>
                 <tr ng-repeat="item in selectedItems" ng-show="item.value > 0">
                   <td>{{item.description}}</td>
-                  <td>{{item.value | currency : 'PLN' : 0}}</td>
+                  <td>{{item.value | currency : 'PLN' : 2}}</td>
                 </tr>
                 <tr>
                   <td>
                     <strong>Total</strong>
                   </td>
                   <td>
-                    <strong>{{total | currency : 'PLN' : 0}}</strong>
+                    <strong>{{total | currency : 'PLN' : 2}}</strong>
                   </td>
                 </tr>
               </tbody>
