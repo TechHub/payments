@@ -1,13 +1,22 @@
 angular.module('thPayments').controller('paymentsLondonCtrl', [
-  '$scope',
-  '$http',
-  '$window',
-  function($scope, $http, $window) {
+  '$scope', '$http', '$window', 'Utils',
+  function($scope, $http, $window, Utils) {
 
     $scope.total = 0;
     $scope.customValue = 0;
-    $scope.selectedItems = [];
+    $scope.selectedItems = [{
+      id: 'custom',
+      description: '',
+      value: 0
+    }];
     $scope.buttonLoading = false;
+
+    $scope.toggleItem = function(index) {
+      return Utils.toggleItem($scope, index);
+    }
+    $scope.updateCustom = function() {
+      return Utils.updateCustom($scope);
+    }
 
     $scope.items = [{
       id: 'flexMembership',
@@ -33,57 +42,11 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       id: 'residentMonthlyDeposit',
       value: 66000,
       description: 'Resident Monthly + Deposit'
-    }];
-
-    $scope.selectedItems.push({
+    },{
       id: 'custom',
       description: '',
       value: 0
-    });
-
-    var updateTotal = function() {
-      $scope.total = 0;
-      $scope.selectedItems.forEach(function(e) {
-        $scope.total += e.value;
-      });
-    }
-
-    $scope.updateCustom = function() {
-      // custom is always the first element
-      $scope.selectedItems[0].description = $scope.customDescription;
-      $scope.selectedItems[0].value = $scope.customValue * 100;
-      updateTotal();
-    };
-
-    $scope.toggleItem = function(index) {
-      var idToCheck = $scope.items[index].id;
-      var present = false;
-      $scope.selectedItems.forEach(function(e, i) {
-        if (e.id === idToCheck) {
-          // it's already present, remove it
-          $scope.selectedItems.splice(i, 1);
-          present = true;
-          $scope.total -= e.value;
-        }
-      });
-      if (!present) {
-        $scope.selectedItems.push($scope.items[index]);
-        $scope.total += $scope.items[index].value;
-      }
-    };
-
-    var generateDescription = function() {
-      var description;
-      $scope.selectedItems.forEach(function(e, i) {
-        if (i === 0) {
-          description = e.description;
-        } else {
-          description = description + ' + ' + e.description;
-        }
-      });
-      console.log(description);
-      return description;
-    }
+    }];
 
     var handler = StripeCheckout.configure({
       key: $window.stripeKey,
@@ -98,7 +61,7 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
           email: token.email,
           fullName: $scope.fullName,
           company: $scope.company,
-          description: generateDescription()
+          description: Utils.generateDescription($scope.selectedItems)
         };
 
         $http({
@@ -127,7 +90,7 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
     $scope.pay = function() {
       handler.open({
         name: 'TechHub',
-        description: generateDescription(),
+        description: Utils.generateDescription($scope.selectedItems),
         currency: 'gbp',
         amount: $scope.total
       });

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const braintree = require('braintree');
+const RazorNode = require('razornode').razorNode;
 const cors = require('cors');
 const app = express();
 let braintreeEnv;
@@ -14,6 +15,7 @@ if (process.env.NODE_ENV === 'production') {
 // CONFIG
 const stripeLondon = require('stripe')(process.env.STRIPE_KEY_LONDON);
 const stripeMadrid = require('stripe')(process.env.STRIPE_KEY_MADRID);
+const razorPay = new RazorNode(process.env.RAZOR_KEY, process.env.RAZOR_SECRET);
 
 const braintreeGateway = braintree.connect({
   environment: braintreeEnv,
@@ -45,6 +47,10 @@ app.get('/warsaw', (req, res) => {
       braintreeToken: response.clientToken,
     });
   });
+});
+
+app.get('/bangalore', (req, res) => {
+  res.render('bangalore.ejs', {});
 });
 
 app.get('/braintree_token', (req, res) => {
@@ -101,6 +107,18 @@ app.post('/charge_stripe', (req, res) => {
       res.send(charge);
     })
     .catch(err => {
+      res.status(500).send(err);
+    });
+});
+
+app.post('/charge_razorpay', (req, res) => {
+  const paymentID = req.body.id;
+  const amount = req.body.amount;
+  razorPay.capturePayment(paymentID, amount)
+    .then((result) => {
+      res.send(result.responseObject);
+    })
+    .catch((err) => {
       res.status(500).send(err);
     });
 });

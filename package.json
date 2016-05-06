@@ -24,6 +24,7 @@
     "dotenv": "^1.2.0",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
+    "razornode": "^1.1.1",
     "stripe": "^4.0.0"
   },
   "devDependencies": {
