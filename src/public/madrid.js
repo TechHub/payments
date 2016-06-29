@@ -74,7 +74,7 @@ angular.module('thPayments').controller('paymentsMadridCtrl', [
     $scope.pay = function() {
       handler.open({
         name: 'TechHub',
-        description: generateDescription(),
+        description: Utils.generateDescription($scope.selectedItems),
         currency: 'eur',
         amount: $scope.total
       });
