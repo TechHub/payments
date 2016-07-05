@@ -1,7 +1,7 @@
 angular.module('thPayments').controller('paymentsWarsawCtrl', [
   '$scope', '$http', '$window', 'Utils',
   function($scope, $http, $window, Utils) {
-    
+
     $scope.buttonLoading = true;
     $scope.total = 0;
     $scope.customValue = 0;
@@ -32,8 +32,8 @@ angular.module('thPayments').controller('paymentsWarsawCtrl', [
     $scope.toggleItem = function(index) {
       return Utils.toggleItem($scope, index);
     }
-    $scope.updateCustom = function() {
-      return Utils.updateCustom($scope);
+    $scope.updateCustomWarsaw = function() {
+      return Utils.updateCustomWarsaw($scope);
     }
 
     $scope.pay = function() {

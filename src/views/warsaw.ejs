@@ -40,7 +40,7 @@
 </head>
 
 <body class="ng-cloak" ng-app="thPayments">
-  <div class="container container-small">
+  <div class="container">
     <div class="text-center">
       <img alt="logo" class="logo" src="https://d1e6a3jvdxo3ln.cloudfront.net/images/website/techhub_3d_logo_png.png">
       <span class="location-logo">Warsaw</span>
@@ -49,7 +49,7 @@
     <div class="payment-view">
       <div ng-controller="paymentsWarsawCtrl">
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <h3>Select items</h3>
             <form>
               <div class="form-group">
@@ -68,27 +68,9 @@
                 <label for="email">Email</label>
                 <input class="form-control" name="email" ng-model="email" type="text">
               </div>
-              <div class="checkbox" ng-repeat="item in items">
-                <label>
-                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} ({{item.value | currency : 'PLN' : 2}})
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                  <input ng-click="toggleCustom()" ng-model="customItem" type="checkbox"> Custom item
-                </label>
-              </div>
-              <div class="form-group" ng-show="customItem">
-                <label for="customDescription">Description</label>
-                <input class="form-control" name="customDescription" ng-change="updateCustom()" ng-model="customDescription" type="text">
-              </div>
-              <div class="form-group" ng-show="customItem">
-                <label for="customValue">Amount</label>
-                <input class="form-control" name="customValue" ng-change="updateCustom()" ng-model="customValue" type="number">
-              </div>
             </form>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <h3>Details</h3>
             <table class="table table-bordered">
               <thead>
@@ -110,10 +92,30 @@
                 </tr>
               </tbody>
             </table>
+            <div class="checkbox" ng-repeat="item in items">
+              <label>
+                <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} ({{item.value | currency : 'PLN' : 2}})
+              </label>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input ng-click="toggleCustom()" ng-model="customItem" type="checkbox"> Custom item
+              </label>
+            </div>
+            <div class="form-group" ng-show="customItem">
+              <label for="customDescription">Description</label>
+              <input class="form-control" name="customDescription" ng-change="updateCustomWarsaw()" ng-model="customDescription" type="text">
+            </div>
+            <div class="form-group" ng-show="customItem">
+              <label for="customValue">Amount</label>
+              <input class="form-control" name="customValue" ng-change="updateCustomWarsaw()" ng-model="customValue" type="number">
+            </div>
+          </div>
+          <div class="col-sm-4">
             <form id="form-warsaw" ng-submit="pay()">
               <div id="ui-warsaw"></div>
               <input name="amount" ng-value="total" type="hidden">
-              <button class="btn btn-primary" ng-disabled="buttonLoading">
+              <button class="btn btn-primary btn-lg" ng-disabled="buttonLoading">
                 <span ng-hide="buttonLoading">Pay now</span>
                 <span ng-show="buttonLoading">
                   <i class="fa fa-lg fa-spin fa-refresh"></i>

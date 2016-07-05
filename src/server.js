@@ -69,6 +69,9 @@ app.post('/charge_braintree', (req, res) => {
       company: req.body.company,
       email: req.body.email,
     },
+    customFields: {
+      description: req.body.description,
+    },
     options: {
       submitForSettlement: true,
     },

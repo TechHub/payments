@@ -32,6 +32,12 @@ angular.module('thPayments', [])
         $scope.selectedItems[0].value = $scope.customValue * 100;
         updateTotal($scope);
       },
+      updateCustomWarsaw: function($scope) {
+        // custom is always the first element
+        $scope.selectedItems[0].description = $scope.customDescription;
+        $scope.selectedItems[0].value = $scope.customValue;
+        updateTotal($scope);
+      },
       toggleItem: function($scope, index) {
         var idToCheck = $scope.items[index].id;
         var present = false;
