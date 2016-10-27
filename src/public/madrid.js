@@ -25,7 +25,7 @@ angular.module('thPayments').controller('paymentsMadridCtrl', [
     }, {
       id: 'daypassMemberGuestMadrid',
       value: 2178,
-      description: 'Day Pass for Non-Member'
+      description: 'Day Pass for Member\'s guest'
     },{
       id: 'custom',
       description: '',
