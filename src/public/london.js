@@ -23,6 +23,10 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       value: 51000,
       description: 'Flex Membership'
     }, {
+      id: 'intern',
+      value: 5000,
+      description: 'Intern 1month'
+    }, {
       id: 'postRegistration',
       value: 44400,
       description: 'Post registration service'
