@@ -36,6 +36,7 @@
     .location-logo {
       font-size: 1.7em;
     }
+
   </style>
 </head>
 
@@ -55,7 +56,7 @@
             <form>
               <div class="checkbox" ng-repeat="item in items">
                 <label>
-                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} ({{item.value / 100 | currency : '£' : 0}})
+                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} <strong>{{item.value / 100 | currency : '£' : 0}}</strong>
                 </label>
               </div>
               <div class="checkbox">
@@ -65,7 +66,8 @@
               </div>
               <div class="form-group" ng-show="customItemLondon">
                 <label for="customDescription">Description</label>
-                <input class="form-control" id="customDescription" name="customDescription" ng-change="updateCustom()" ng-model="customDescription" type="text">
+                <input class="form-control" id="customDescription" name="customDescription" ng-change="updateCustom()" ng-model="customDescription"
+                  type="text">
               </div>
               <div class="form-group" ng-show="customItemLondon">
                 <label for="customValue">Amount</label>
@@ -104,7 +106,8 @@
               </tbody>
             </table>
             <div class="small-section">
-              <button class="btn" id="customButton" ng-class="{'btn-default':buttonLoading, 'btn-primary':!buttonLoading}" ng-click="pay()" ng-disabled="buttonLoading">
+              <button class="btn" id="customButton" ng-class="{'btn-default':buttonLoading, 'btn-primary':!buttonLoading}" ng-click="pay()"
+                ng-disabled="buttonLoading">
                 <span ng-hide="buttonLoading">Pay now</span>
                 <span ng-show="buttonLoading">
                   <i class="fa fa-lg fa-spin fa-refresh"></i>
@@ -143,6 +146,7 @@
     } else {
       window.stripeKey = 'pk_live_uc40nu4QYGSUXFFHAPRnthVl';
     }
+
   </script>
   <script src="main.js"></script>
   <script src="london.js"></script>
