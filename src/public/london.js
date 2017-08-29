@@ -24,7 +24,7 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       description: 'Flex Membership'
     }, {
       id: 'intern',
-      value: 5000,
+      value: 9000,
       description: 'Intern 1month'
     }, {
       id: 'postRegistration',
