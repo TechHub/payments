@@ -6,19 +6,26 @@ const app = express();
 
 // CONFIG
 const stripeLondon = require('stripe')(process.env.STRIPE_KEY_LONDON);
+const stripeNewYork = require('stripe')(process.env.STRIPE_KEY_NEWYORK);
 const razorPay = new RazorNode(process.env.RAZOR_KEY, process.env.RAZOR_SECRET);
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false,
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  })
+);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 app.get('/london', (req, res) => {
   res.render('london.ejs', {});
+});
+
+app.get('/nyc', (req, res) => {
+  res.render('newyork.ejs', {});
 });
 
 app.get('/bangalore', (req, res) => {
@@ -32,9 +39,9 @@ app.post('/charge_stripe', (req, res) => {
   if (req.body.location === 'london') {
     stripe = stripeLondon;
     currency = 'gbp';
-  } else if (req.body.location === 'madrid') {
-    stripe = stripeMadrid;
-    currency = 'eur';
+  } else if (req.body.location === 'nyc') {
+    stripe = stripeNewYork;
+    currency = 'usd';
   }
 
   const chargeParams = {
@@ -49,7 +56,8 @@ app.post('/charge_stripe', (req, res) => {
     },
   };
 
-  stripe.charges.create(chargeParams)
+  stripe.charges
+    .create(chargeParams)
     .then(charge => {
       res.send(charge);
     })
@@ -61,11 +69,12 @@ app.post('/charge_stripe', (req, res) => {
 app.post('/charge_razorpay', (req, res) => {
   const paymentID = req.body.id;
   const amount = req.body.amount;
-  razorPay.capturePayment(paymentID, amount)
-    .then((result) => {
+  razorPay
+    .capturePayment(paymentID, amount)
+    .then(result => {
       res.send(result.responseObject);
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send(err);
     });
 });
