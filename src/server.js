@@ -6,7 +6,7 @@ const app = express();
 
 // CONFIG
 const stripeLondon = require('stripe')(process.env.STRIPE_KEY_LONDON);
-const stripeNewYork = require('stripe')(process.env.STRIPE_KEY_NEWYORK);
+const stripeNYC = require('stripe')(process.env.STRIPE_KEY_NYC);
 const razorPay = new RazorNode(process.env.RAZOR_KEY, process.env.RAZOR_SECRET);
 
 app.use(cors());
@@ -25,7 +25,7 @@ app.get('/london', (req, res) => {
 });
 
 app.get('/nyc', (req, res) => {
-  res.render('newyork.ejs', {});
+  res.render('nyc.ejs', {});
 });
 
 app.get('/bangalore', (req, res) => {
@@ -40,7 +40,7 @@ app.post('/charge_stripe', (req, res) => {
     stripe = stripeLondon;
     currency = 'gbp';
   } else if (req.body.location === 'nyc') {
-    stripe = stripeNewYork;
+    stripe = stripeNYC;
     currency = 'usd';
   }
 
