@@ -25,28 +25,33 @@ angular.module('thPayments').controller('paymentsNewYorkCtrl', [
     $scope.items = [
       {
         id: 'flexMembershipMonthly',
-        value: 20672,
+        value: 19133,
         description: 'Flex Membership Monthly'
       },
       {
         id: 'flexMembership',
-        value: 217600,
+        value: 200133,
         description: 'Flex Membership Yearly'
       },
       {
         id: 'postRegistrationMonthly',
-        value: 8160,
-        description: 'Address add-on (monthly)'
+        value: 7500,
+        description: 'Address add-on Monthly'
       },
       {
         id: 'postRegistration',
-        value: 81600,
-        description: 'Address add-on (yearly)'
+        value: 75000,
+        description: 'Address add-on Yearly'
       },
       {
         id: 'residentMonthly',
-        value: 59840,
+        value: 55133,
         description: 'Resident Monthly'
+      },
+      {
+        id: 'intern',
+        value: 10000,
+        description: 'Intern Monthly'
       },
       {
         id: 'dayPassNonMember',

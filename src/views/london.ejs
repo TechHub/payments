@@ -56,7 +56,7 @@
             <form>
               <div class="checkbox" ng-repeat="item in items">
                 <label>
-                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} <strong>{{item.value / 100 | currency : '£' : 0}}</strong>
+                  <input id="{{item.id}}" ng-click="toggleItem($index)" type="checkbox" value="{{item.value}}"> {{item.description}} <strong>{{item.value / 100 | currency : '£' : 2}}</strong>
                 </label>
               </div>
               <div class="checkbox">
