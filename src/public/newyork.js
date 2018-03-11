@@ -50,17 +50,17 @@ angular.module('thPayments').controller('paymentsNewYorkCtrl', [
       },
       {
         id: 'intern',
-        value: 10000,
+        value: 10133,
         description: 'Intern Monthly'
       },
       {
         id: 'dayPassNonMember',
-        value: 3808,
+        value: 3500,
         description: 'Daily pass (non-member)'
       },
       {
-        id: 'residentMonthly',
-        value: 2702,
+        id: 'dayPassMember',
+        value: 2500,
         description: 'Daily pass (members guest)'
       }
     ];

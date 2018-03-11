@@ -50,12 +50,12 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       },
       {
         id: 'residentMonthly',
-        value: 47880,
+        value: 35880,
         description: 'Resident Monthly'
       },
       {
         id: 'residentMonthlyDeposit',
-        value: 66000,
+        value: 71760,
         description: 'Resident Monthly + Deposit'
       },
       {
