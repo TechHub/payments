@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    “start”: “NODE_ENV=production; node server.js”,
+    "start": "gulp serve",
+    "deploy": "gulp deploy",
     "test": "babel-node tests.js | faucet",
   },
   "repository": {
