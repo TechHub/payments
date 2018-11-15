@@ -25,13 +25,13 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
     $scope.items = [
       {
         id: 'flexMembership',
-        value: 60000,
+        value: 72000,
         description: 'Flex Membership'
       },
       {
         id: 'intern',
         value: 9000,
-        description: 'Intern 1month'
+        description: 'Intern 1 month'
       },
       {
         id: 'postRegistration',
@@ -50,18 +50,19 @@ angular.module('thPayments').controller('paymentsLondonCtrl', [
       },
       {
         id: 'residentMonthly',
-        value: 35880,
+        value: 42000,
         description: 'Resident Monthly'
       },
       {
         id: 'residentMonthlyDeposit',
-        value: 71760,
+        value: 84000,
         description: 'Resident Monthly + Deposit'
       },
       {
-        id: 'custom',
-        description: '',
-        value: 0
+        id: 'campusSpecial',
+        value: 10000,
+        description: 'Campus London Special Offer',
+        
       }
     ];
 
