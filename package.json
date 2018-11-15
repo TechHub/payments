@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     “start”: “NODE_ENV=production; node server.js”,
-    "test": "babel-node tests.js | faucet"
+    "test": "babel-node tests.js | faucet",
   },
   "repository": {
     "type": "git",
