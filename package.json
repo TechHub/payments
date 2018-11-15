@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "deploy": "brunch build --production"
+    "start": "NODE_ENV=production node server.js"
     "test": "babel-node tests.js | faucet"
   },
   "repository": {
